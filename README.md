@@ -2,7 +2,7 @@
 
 Secure document sharing where the wrong person cannot read a file, and every access, including refused attempts, is recorded in a tamper-evident audit trail.
 
-**Live URL:** <LIVE URL> (API documentation and the interface are at `/docs`)
+**Live URL:**  https://trustvault-8eso.onrender.com (API documentation and the interface are at `/docs`)
 
 Free hosting: the first load can take up to a minute while the server wakes up.
 

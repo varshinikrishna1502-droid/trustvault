@@ -10,7 +10,11 @@ from sqlalchemy.orm import Session
 from database import get_db
 from models import User
 
-SECRET = os.environ.get("SECRET_KEY", "change-me-before-deploying")
+SECRET = os.environ.get("SECRET_KEY")
+if not SECRET:
+    if os.environ.get("APP_ENV") == "production":
+        raise RuntimeError("SECRET_KEY must be set in production")
+    SECRET = "dev-only-secret-key-not-for-production-use-0123456789"
 bearer = HTTPBearer()
 
 
@@ -26,7 +30,7 @@ def make_token(user: User) -> str:
     payload = {
         "sub": str(user.id),
         "tv": user.token_version,
-        "exp": datetime.now(timezone.utc) + timedelta(minutes=30),
+        "exp": datetime.now(timezone.utc) + timedelta(minutes=15),
     }
     return jwt.encode(payload, SECRET, algorithm="HS256")
 

@@ -19,7 +19,7 @@ from security import current_user, require_role
 router = APIRouter(prefix="/documents", tags=["documents"])
 admin_router = APIRouter(prefix="/admin", tags=["admin"])
 
-UPLOAD_DIR = "uploads"
+UPLOAD_DIR = os.environ.get("UPLOAD_DIR", "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 MAX_SIZE = 5 * 1024 * 1024  # 5 MB
 ALLOWED = {".pdf", ".png", ".jpg", ".jpeg", ".txt"}

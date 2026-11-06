@@ -8,6 +8,7 @@ from database import Base, SessionLocal, engine, get_db
 from models import User
 from security import current_user, hash_password, make_token, require_role, verify_password
 from documents import admin_router, router as documents_router
+from audit import log
 
 EMAIL_PATTERN = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
 
@@ -101,4 +102,5 @@ def change_role(user_id: int, body: RoleIn, db: Session = Depends(get_db),
     target.role = body.role
     target.token_version += 1  # old tokens stop working immediately
     db.commit()
+    log(db, admin.id, "role_change", None, "allowed", f"user={target.id} new_role={body.role}")
     return {"id": target.id, "role": target.role}

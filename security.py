@@ -26,7 +26,7 @@ def make_token(user: User) -> str:
     payload = {
         "sub": str(user.id),
         "tv": user.token_version,
-        "exp": datetime.now(timezone.utc) + timedelta(minutes=15),
+        "exp": datetime.now(timezone.utc) + timedelta(minutes=30),
     }
     return jwt.encode(payload, SECRET, algorithm="HS256")
 

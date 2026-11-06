@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from database import Base, SessionLocal, engine, get_db
 from models import User
 from security import current_user, hash_password, make_token, require_role, verify_password
+from documents import admin_router, router as documents_router
 
 EMAIL_PATTERN = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
 
@@ -39,6 +40,8 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+app.include_router(documents_router)
+app.include_router(admin_router)
 
 
 class SignupIn(BaseModel):

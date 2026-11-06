@@ -160,3 +160,24 @@ def test_role_change_is_audited(client, admin):
     client.put(f"/admin/users/{uid}/role", json={"role": "owner"}, headers=admin)
     rows = client.get("/admin/audit?action=role_change", headers=admin).json()
     assert any(f"user={uid} " in row["detail"] for row in rows)
+
+def test_audit_chain_cannot_be_rebuilt_without_the_key(client, doc, admin):
+    import hashlib
+    db = SessionLocal()
+    try:
+        rows = db.query(AuditLog).order_by(AuditLog.id).all()
+        saved = [(r.prev_hash, r.hash) for r in rows]
+        prev = "0" * 64
+        for r in rows:  # attacker recomputes the whole chain with plain SHA-256
+            text = f"{prev}|{r.ts}|{r.actor_id}|{r.action}|{r.doc_id}|{r.result}|{r.detail}"
+            r.prev_hash = prev
+            r.hash = hashlib.sha256(text.encode()).hexdigest()
+            prev = r.hash
+        db.commit()
+        assert client.get("/admin/audit/verify", headers=admin).json()["intact"] is False
+        for r, (ph, h) in zip(rows, saved):
+            r.prev_hash, r.hash = ph, h
+        db.commit()
+    finally:
+        db.close()
+    assert client.get("/admin/audit/verify", headers=admin).json()["intact"] is True

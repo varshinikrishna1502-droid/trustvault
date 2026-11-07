@@ -4,6 +4,8 @@ Secure document sharing where the wrong person cannot read a file, and every acc
 
 **Live URL:**  https://trustvault-8eso.onrender.com (API documentation and the interface are at `/docs`)
 
+**Web interface:** https://trustvault-8eso.onrender.com/ui/ (the Swagger UI at `/docs` is still available)
+
 **Demo video:** https://drive.google.com/file/d/16H6a7HC-j2VQBAx2-WP0NWvQJbSO01q7/view?usp=sharing
 
 Free hosting: the first load can take up to a minute while the server wakes up.

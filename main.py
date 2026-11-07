@@ -9,6 +9,8 @@ from models import User
 from security import current_user, hash_password, make_token, require_role, verify_password
 from documents import admin_router, router as documents_router
 from audit import log
+import os
+from fastapi.staticfiles import StaticFiles
 
 EMAIL_PATTERN = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
 
@@ -43,6 +45,19 @@ app = FastAPI(
 )
 app.include_router(documents_router)
 app.include_router(admin_router)
+
+@app.middleware("http")
+async def ui_security_headers(request, call_next):
+    response = await call_next(request)
+    if request.url.path.startswith("/ui"):
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
+        )
+        response.headers["X-Content-Type-Options"] = "nosniff"
+    return response
+
+
+app.mount("/ui", StaticFiles(directory=os.path.join(os.path.dirname(__file__), "static"), html=True), name="ui")
 
 
 class SignupIn(BaseModel):

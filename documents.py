@@ -186,6 +186,16 @@ def share(doc_id: int, body: ShareIn, user: User = Depends(current_user), db: Se
     log(db, user.id, "permission_grant", doc.id, "allowed", f"to={target.id} level={body.level}")
     return {"shared_with": target.email, "level": body.level}
 
+@router.get("/{doc_id}/shares")
+def list_shares(doc_id: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    doc = get_doc_or_404(db, user, doc_id, "share", "permission_view")
+    rows = (
+        db.query(Permission, User.email)
+        .join(User, User.id == Permission.user_id)
+        .filter(Permission.doc_id == doc.id, Permission.revoked_at.is_(None))
+        .all()
+    )
+    return [{"user_id": p.user_id, "email": email, "level": p.level} for p, email in rows]
 
 @router.delete("/{doc_id}/share/{target_id}")
 def revoke(doc_id: int, target_id: int, user: User = Depends(current_user), db: Session = Depends(get_db)):

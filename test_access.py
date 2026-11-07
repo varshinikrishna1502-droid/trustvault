@@ -181,3 +181,16 @@ def test_audit_chain_cannot_be_rebuilt_without_the_key(client, doc, admin):
     finally:
         db.close()
     assert client.get("/admin/audit/verify", headers=admin).json()["intact"] is True
+def test_only_owner_can_list_shares(client, doc, owner, owner2, viewer):
+    client.post(f"/documents/{doc}/share", json={"email": "viewer@trustvault.com", "level": "read"}, headers=owner)
+    r = client.get(f"/documents/{doc}/shares", headers=owner)
+    assert r.status_code == 200
+    assert r.json()[0]["email"] == "viewer@trustvault.com"
+    assert client.get(f"/documents/{doc}/shares", headers=owner2).status_code == 404
+    assert client.get(f"/documents/{doc}/shares", headers=viewer).status_code == 404
+
+
+def test_ui_is_served_with_a_strict_csp(client):
+    r = client.get("/ui/")
+    assert r.status_code == 200
+    assert "default-src 'self'" in r.headers["content-security-policy"]

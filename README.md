@@ -4,6 +4,8 @@ Secure document sharing where the wrong person cannot read a file, and every acc
 
 **Live URL:**  https://trustvault-8eso.onrender.com (API documentation and the interface are at `/docs`)
 
+**Demo video:** https://drive.google.com/file/d/16H6a7HC-j2VQBAx2-WP0NWvQJbSO01q7/view?usp=sharing
+
 Free hosting: the first load can take up to a minute while the server wakes up.
 
 ## Demo accounts
@@ -83,6 +85,7 @@ Logged: uploads, downloads, edits, deletes, grants, revokes, role changes, and r
 - `THREATS.md`: threats, what was done about each, what was knowingly accepted
 - `PROMPTS.md`: how AI was used and where it was wrong
 - `test_access.py`, `conftest.py`: automated tests
+- `WRITEUP.md`: what I built, what I did not, permission model, how I used AI, what is unfinished
 
 ## Not built
 Frontend (Swagger UI is used), sharing with people outside the company, versions, restore, retention, groups and folders, MFA, password reset, AI sharing suggestions. Known gaps (no login rate limiting, failed logins not logged) are listed in THREATS.md.

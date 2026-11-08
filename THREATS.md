@@ -64,5 +64,14 @@ Status: **Closed** = fixed and tested. **Partly** = reduced, a gap remains. **Ac
 | E4 | /docs visible on the live site | Left on because it is the API documentation the brief asks for. | Accepted | none |
 | E5 | Data lost on redeploy | Free hosting disks can be wiped. An availability problem, not a confidentiality one. | Accepted | none |
 
+## F. Web interface
+
+| # | Threat | What I did | Status | Test |
+|---|--------|-----------|--------|------|
+| F1 | Script injection through file names, emails or audit text | The page is built with createElement and textContent, never innerHTML. A Content-Security-Policy of `default-src 'self'` blocks inline and third-party scripts on /ui. | Closed | test_ui_is_served_with_a_strict_csp (checks the header; the no-innerHTML rule is by code review) |
+| F2 | Token theft from the browser | The token is kept only in a JavaScript variable, not in localStorage or a cookie. It is lost on refresh, so the user logs in again. | Partly (a script that ran on the page could still read it) | none |
+| F3 | Buttons hidden for non-owners | Only a convenience. Every action is checked again by the server, so calling the API directly gets the same refusal. | Closed | all the access tests |
+| F4 | New endpoint that lists who has access to a document | Owner-only, through the same `get_doc_or_404` check. Refused attempts are logged. | Closed | test_only_owner_can_list_shares |
+
 ## Not built, on purpose
-A frontend (Swagger UI is the interface), sharing with people outside the company, file versions, restore after delete, retention rules, groups and folders (permissions are per document), MFA, password reset, AI sharing suggestions. I spent the two days on making the permission check and the audit trail hold.
+"A rich frontend framework", sharing with people outside the company, file versions, restore after delete, retention rules, groups and folders (permissions are per document), MFA, password reset, AI sharing suggestions. I spent the two days on making the permission check and the audit trail hold.

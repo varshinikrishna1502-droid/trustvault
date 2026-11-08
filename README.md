@@ -75,6 +75,7 @@ SQLAlchemy models are in `models.py`. Tables are created on startup. Tables: `us
 | GET | /documents/{id}/download | document owner, or a user with a read or edit grant |
 | PUT | /documents/{id} | document owner, or a user with an edit grant |
 | DELETE | /documents/{id} | document owner only |
+| GET | /documents/{id}/shares | document owner only (lists who has access) |
 | POST | /documents/{id}/share | document owner only |
 | DELETE | /documents/{id}/share/{user_id} | document owner only |
 | GET | /admin/audit | admin |
@@ -90,4 +91,4 @@ Logged: uploads, downloads, edits, deletes, grants, revokes, role changes, and r
 - `WRITEUP.md`: what I built, what I did not, permission model, how I used AI, what is unfinished
 
 ## Not built
-Frontend (Swagger UI is used), sharing with people outside the company, versions, restore, retention, groups and folders, MFA, password reset, AI sharing suggestions. Known gaps (no login rate limiting, failed logins not logged) are listed in THREATS.md.
+Frontend framework (a plain HTML and JavaScript page is served at /ui), sharing with people outside the company, versions, restore, retention, groups and folders, MFA, password reset, AI sharing suggestions. Known gaps (no login rate limiting, failed logins not logged) are listed in THREATS.md.

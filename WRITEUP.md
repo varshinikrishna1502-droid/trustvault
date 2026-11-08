@@ -1,9 +1,9 @@
 # TrustVault: write-up
 
 ## What I built
-A document sharing service where the server decides who can read a file on every request, and every access, including refused attempts, goes into a tamper-evident audit log. It is a FastAPI backend with SQLite (through SQLAlchemy), deployed on Render. The interface is the Swagger UI at `/docs`.
+A document sharing service where the server decides who can read a file on every request, and every access, including refused attempts, goes into a tamper-evident audit log. It is a FastAPI backend with SQLite (through SQLAlchemy), deployed on Render. There is a small web interface at `/ui` (plain HTML and JavaScript, no framework), and the Swagger UI at `/docs`.
 
-It has three roles (admin, owner, viewer), upload with validation, per-document read or edit grants, revoking, search by name, owner, category and date, an admin view of the audit log, and 21 automated tests. The live URL, demo accounts and the API table (who may call what) are in README.md.
+It has three roles (admin, owner, viewer), upload with validation, per-document read or edit grants, revoking, search by name, owner, category and date, an admin view of the audit log, and 23 automated tests. The live URL, demo accounts and the API table (who may call what) are in README.md.
 
 ## My permission model
 Every document belongs to one owner. Nobody else can reach it unless the owner gives them a grant, either read or edit, by name. There are no groups and no folder inheritance, so one grant covers exactly one document. I chose this because it is the simplest model I could fully check: for any document, the list of people who can reach it is the owner plus the rows in one table.
@@ -20,7 +20,7 @@ Each row stores a hash of the previous row plus its own fields, computed with a 
 I used AI to write most of the code and to plan the work. PROMPTS.md lists six cases where its output was wrong, each with the commit that fixed it. Several were in access control and the audit trail: the first design relied on an "insert-only database user" that SQLite does not have, the audit chain could be rebuilt by anyone with database access, a role change was not logged, and the token secret had an unsafe default. I also checked that my tests really depend on the access check by removing it and watching tests fail. Some mistakes I found by running things myself. Others the AI pointed out when I asked it to review its own work. PROMPTS.md says which was which.
 
 ## What I deliberately did not build
-A separate frontend (Swagger UI is the interface), sharing with people outside the company, file versions, restore after delete, retention rules, groups and folders, MFA, password reset, and the AI suggestion feature for sharing. I had two days, and I spent them on the permission check and the audit trail.
+A frontend framework (the `/ui` page is plain HTML and JavaScript), sharing with people outside the company, file versions, restore after delete, retention rules, groups and folders, MFA, password reset, and the AI suggestion feature for sharing. I had two days, and I spent them on the permission check and the audit trail.
 
 ## What is unfinished
 - No rate limiting on login (THREATS.md B6).
